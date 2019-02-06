@@ -1,0 +1,28 @@
+#Converting unixtime to reaadable time format and choosing dates between certain range
+
+select *,cast(from_unixtime(timestamp) AS timestamp) as date_time from table_name where timestamp
+   BETWEEN CAST(to_unixtime(CAST('2014-09-08 00:00:00' AS timestamp)) AS BIGINT)
+       AND CAST(to_unixtime(CAST('2014-11-03 23:59:59' AS timestamp)) AS BIGINT)
+
+#For selecting only those records from the table "table_name" where the date_time difference between the existing and next record for same data in "col1"  
+is greater than 5 minutes
+
+select col1,diff from (SELECT col1,date_time,
+		date_diff('minute', Lag(date_time, 1) OVER(ORDER BY col1, date_time), date_time) as diff
+FROM table_name)where diff > 5 
+
+
+#For selecting the number of records from the table "table_name" grouping on the time of the day from the col "timestamp"
+Here 6-12 is Breakfast
+12-17 is Lunch
+17 to 24 is Dinner
+0 to 6 is Midnight
+
+select count(col1) as total_count ,time_of_day from(
+SELECT col1,timestamp,  (CASE 
+		WHEN  hour(timestamp) BETWEEN 6 AND 12 THEN 'Breakfast_hour'
+		WHEN  hour(timestamp) BETWEEN 12 AND 17 THEN 'Lunch_hour'
+		WHEN  hour(timestamp) BETWEEN 17 AND 24 THEN 'Dinner_hour'
+        WHEN hour (timestamp) BETWEEN 0 AND 6 THEN 'Midnight_hour'
+	END) as time_of_day
+FROM table_name ) group by time_of_day 
