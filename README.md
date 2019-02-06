@@ -1,2 +1,3 @@
-# Digital_Marketing_data_analysis_SQl_queries
-Important SQL queries for out of home marketing.
+# Digital_Marketing_OOH_Data_analysis
+This file conatains few important SQL/Athena queries required for manipulating data in the same table
+Python code for getting the area details based on their geo location (lat and long coordinates)
